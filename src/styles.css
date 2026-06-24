@@ -1,6 +1,10 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -59,10 +63,21 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-haac-green: var(--haac-green);
+  --color-haac-green-dark: var(--haac-green-dark);
+  --color-haac-green-darker: var(--haac-green-darker);
+  --color-haac-yellow: var(--haac-yellow);
+  --color-haac-red: var(--haac-red);
+  --font-sans: "Inter", system-ui, sans-serif;
 }
 
 :root {
   --radius: 0.625rem;
+  --haac-green: oklch(0.55 0.18 145);
+  --haac-green-dark: oklch(0.45 0.16 145);
+  --haac-green-darker: oklch(0.35 0.14 145);
+  --haac-yellow: oklch(0.88 0.18 95);
+  --haac-red: oklch(0.52 0.22 28);
   --background: oklch(1 0 0);
   --foreground: oklch(0.129 0.042 264.695);
   --card: oklch(1 0 0);
