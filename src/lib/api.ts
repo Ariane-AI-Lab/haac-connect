@@ -88,3 +88,47 @@ export interface Conversation {
   messages: Message[];
   derniere_activite?: string;
 }
+
+export interface Agent {
+  id: number | string;
+  nom: string;
+  email: string;
+  role: "agent" | "admin" | "superadmin";
+  actif: boolean;
+  date_creation?: string;
+  derniere_connexion?: string | null;
+}
+
+export interface DashboardStats {
+  total_conversations: number;
+  en_attente: number;
+  en_cours: number;
+  cloturees_jour: number;
+  cloturees_total: number;
+  agents_actifs: number;
+  agents_total: number;
+  messages_jour?: number;
+}
+
+export interface SerieJour {
+  date: string;
+  conversations: number;
+  cloturees: number;
+}
+
+export interface ProblematiqueStat {
+  libelle: string;
+  total: number;
+}
+
+export interface AgentStat {
+  nom: string;
+  prises: number;
+  cloturees: number;
+}
+
+export interface Problematique {
+  id: number | string;
+  libelle: string;
+  actif?: boolean;
+}
