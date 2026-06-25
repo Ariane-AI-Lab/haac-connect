@@ -16,7 +16,7 @@ import { api, type Agent } from "@/lib/api";
 import { formatDateTime } from "@/lib/format";
 
 export const Route = createFileRoute("/admin/agents")({
-  component: AdminAgents;
+  component: AdminAgents,
 });
 
 function AdminAgents() {
