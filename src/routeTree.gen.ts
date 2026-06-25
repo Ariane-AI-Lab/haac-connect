@@ -15,6 +15,7 @@ import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AgentConversationsRouteImport } from './routes/agent/conversations'
 import { Route as AdminStatistiquesRouteImport } from './routes/admin/statistiques'
+import { Route as AdminProblematiquesRouteImport } from './routes/admin/problematiques'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
 import { Route as AdminConversationsRouteImport } from './routes/admin/conversations'
 import { Route as AdminAgentsRouteImport } from './routes/admin/agents'
@@ -50,6 +51,11 @@ const AdminStatistiquesRoute = AdminStatistiquesRouteImport.update({
   path: '/statistiques',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminProblematiquesRoute = AdminProblematiquesRouteImport.update({
+  id: '/problematiques',
+  path: '/problematiques',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -79,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/admin/agents': typeof AdminAgentsRoute
   '/admin/conversations': typeof AdminConversationsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/problematiques': typeof AdminProblematiquesRoute
   '/admin/statistiques': typeof AdminStatistiquesRoute
   '/agent/conversations': typeof AgentConversationsRoute
   '/agent/conversation/$phone': typeof AgentConversationPhoneRoute
@@ -91,6 +98,7 @@ export interface FileRoutesByTo {
   '/admin/agents': typeof AdminAgentsRoute
   '/admin/conversations': typeof AdminConversationsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/problematiques': typeof AdminProblematiquesRoute
   '/admin/statistiques': typeof AdminStatistiquesRoute
   '/agent/conversations': typeof AgentConversationsRoute
   '/agent/conversation/$phone': typeof AgentConversationPhoneRoute
@@ -104,6 +112,7 @@ export interface FileRoutesById {
   '/admin/agents': typeof AdminAgentsRoute
   '/admin/conversations': typeof AdminConversationsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/problematiques': typeof AdminProblematiquesRoute
   '/admin/statistiques': typeof AdminStatistiquesRoute
   '/agent/conversations': typeof AgentConversationsRoute
   '/agent/conversation/$phone': typeof AgentConversationPhoneRoute
@@ -118,6 +127,7 @@ export interface FileRouteTypes {
     | '/admin/agents'
     | '/admin/conversations'
     | '/admin/dashboard'
+    | '/admin/problematiques'
     | '/admin/statistiques'
     | '/agent/conversations'
     | '/agent/conversation/$phone'
@@ -130,6 +140,7 @@ export interface FileRouteTypes {
     | '/admin/agents'
     | '/admin/conversations'
     | '/admin/dashboard'
+    | '/admin/problematiques'
     | '/admin/statistiques'
     | '/agent/conversations'
     | '/agent/conversation/$phone'
@@ -142,6 +153,7 @@ export interface FileRouteTypes {
     | '/admin/agents'
     | '/admin/conversations'
     | '/admin/dashboard'
+    | '/admin/problematiques'
     | '/admin/statistiques'
     | '/agent/conversations'
     | '/agent/conversation/$phone'
@@ -198,6 +210,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminStatistiquesRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/problematiques': {
+      id: '/admin/problematiques'
+      path: '/problematiques'
+      fullPath: '/admin/problematiques'
+      preLoaderRoute: typeof AdminProblematiquesRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/dashboard': {
       id: '/admin/dashboard'
       path: '/dashboard'
@@ -233,6 +252,7 @@ interface AdminRouteRouteChildren {
   AdminAgentsRoute: typeof AdminAgentsRoute
   AdminConversationsRoute: typeof AdminConversationsRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminProblematiquesRoute: typeof AdminProblematiquesRoute
   AdminStatistiquesRoute: typeof AdminStatistiquesRoute
 }
 
@@ -240,6 +260,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminAgentsRoute: AdminAgentsRoute,
   AdminConversationsRoute: AdminConversationsRoute,
   AdminDashboardRoute: AdminDashboardRoute,
+  AdminProblematiquesRoute: AdminProblematiquesRoute,
   AdminStatistiquesRoute: AdminStatistiquesRoute,
 }
 
