@@ -14,6 +14,7 @@ import { Route as AgentRouteRouteImport } from './routes/agent/route'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AgentConversationsRouteImport } from './routes/agent/conversations'
+import { Route as AdminStatistiquesRouteImport } from './routes/admin/statistiques'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
 import { Route as AdminConversationsRouteImport } from './routes/admin/conversations'
 import { Route as AdminAgentsRouteImport } from './routes/admin/agents'
@@ -44,6 +45,11 @@ const AgentConversationsRoute = AgentConversationsRouteImport.update({
   path: '/conversations',
   getParentRoute: () => AgentRouteRoute,
 } as any)
+const AdminStatistiquesRoute = AdminStatistiquesRouteImport.update({
+  id: '/statistiques',
+  path: '/statistiques',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -73,6 +79,7 @@ export interface FileRoutesByFullPath {
   '/admin/agents': typeof AdminAgentsRoute
   '/admin/conversations': typeof AdminConversationsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/statistiques': typeof AdminStatistiquesRoute
   '/agent/conversations': typeof AgentConversationsRoute
   '/agent/conversation/$phone': typeof AgentConversationPhoneRoute
 }
@@ -84,6 +91,7 @@ export interface FileRoutesByTo {
   '/admin/agents': typeof AdminAgentsRoute
   '/admin/conversations': typeof AdminConversationsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/statistiques': typeof AdminStatistiquesRoute
   '/agent/conversations': typeof AgentConversationsRoute
   '/agent/conversation/$phone': typeof AgentConversationPhoneRoute
 }
@@ -96,6 +104,7 @@ export interface FileRoutesById {
   '/admin/agents': typeof AdminAgentsRoute
   '/admin/conversations': typeof AdminConversationsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/statistiques': typeof AdminStatistiquesRoute
   '/agent/conversations': typeof AgentConversationsRoute
   '/agent/conversation/$phone': typeof AgentConversationPhoneRoute
 }
@@ -109,6 +118,7 @@ export interface FileRouteTypes {
     | '/admin/agents'
     | '/admin/conversations'
     | '/admin/dashboard'
+    | '/admin/statistiques'
     | '/agent/conversations'
     | '/agent/conversation/$phone'
   fileRoutesByTo: FileRoutesByTo
@@ -120,6 +130,7 @@ export interface FileRouteTypes {
     | '/admin/agents'
     | '/admin/conversations'
     | '/admin/dashboard'
+    | '/admin/statistiques'
     | '/agent/conversations'
     | '/agent/conversation/$phone'
   id:
@@ -131,6 +142,7 @@ export interface FileRouteTypes {
     | '/admin/agents'
     | '/admin/conversations'
     | '/admin/dashboard'
+    | '/admin/statistiques'
     | '/agent/conversations'
     | '/agent/conversation/$phone'
   fileRoutesById: FileRoutesById
@@ -179,6 +191,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AgentConversationsRouteImport
       parentRoute: typeof AgentRouteRoute
     }
+    '/admin/statistiques': {
+      id: '/admin/statistiques'
+      path: '/statistiques'
+      fullPath: '/admin/statistiques'
+      preLoaderRoute: typeof AdminStatistiquesRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/dashboard': {
       id: '/admin/dashboard'
       path: '/dashboard'
@@ -214,12 +233,14 @@ interface AdminRouteRouteChildren {
   AdminAgentsRoute: typeof AdminAgentsRoute
   AdminConversationsRoute: typeof AdminConversationsRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminStatistiquesRoute: typeof AdminStatistiquesRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminAgentsRoute: AdminAgentsRoute,
   AdminConversationsRoute: AdminConversationsRoute,
   AdminDashboardRoute: AdminDashboardRoute,
+  AdminStatistiquesRoute: AdminStatistiquesRoute,
 }
 
 const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
