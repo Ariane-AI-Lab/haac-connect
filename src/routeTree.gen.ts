@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AgentRouteRouteImport } from './routes/agent/route'
+import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AgentConversationsRouteImport } from './routes/agent/conversations'
 import { Route as AgentConversationPhoneRouteImport } from './routes/agent/conversation.$phone'
@@ -23,6 +24,11 @@ const LoginRoute = LoginRouteImport.update({
 const AgentRouteRoute = AgentRouteRouteImport.update({
   id: '/agent',
   path: '/agent',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRouteRoute = AdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -43,6 +49,7 @@ const AgentConversationPhoneRoute = AgentConversationPhoneRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRoute
   '/agent': typeof AgentRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/agent/conversations': typeof AgentConversationsRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRoute
   '/agent': typeof AgentRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/agent/conversations': typeof AgentConversationsRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteRoute
   '/agent': typeof AgentRouteRouteWithChildren
   '/login': typeof LoginRoute
   '/agent/conversations': typeof AgentConversationsRoute
@@ -67,6 +76,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/agent'
     | '/login'
     | '/agent/conversations'
@@ -74,6 +84,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/agent'
     | '/login'
     | '/agent/conversations'
@@ -81,6 +92,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/agent'
     | '/login'
     | '/agent/conversations'
@@ -89,6 +101,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRouteRoute: typeof AdminRouteRoute
   AgentRouteRoute: typeof AgentRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
 }
@@ -107,6 +120,13 @@ declare module '@tanstack/react-router' {
       path: '/agent'
       fullPath: '/agent'
       preLoaderRoute: typeof AgentRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -149,6 +169,7 @@ const AgentRouteRouteWithChildren = AgentRouteRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRouteRoute: AdminRouteRoute,
   AgentRouteRoute: AgentRouteRouteWithChildren,
   LoginRoute: LoginRoute,
 }
