@@ -15,6 +15,7 @@ import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AgentConversationsRouteImport } from './routes/agent/conversations'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
+import { Route as AdminAgentsRouteImport } from './routes/admin/agents'
 import { Route as AgentConversationPhoneRouteImport } from './routes/agent/conversation.$phone'
 
 const LoginRoute = LoginRouteImport.update({
@@ -47,6 +48,11 @@ const AdminDashboardRoute = AdminDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminAgentsRoute = AdminAgentsRouteImport.update({
+  id: '/agents',
+  path: '/agents',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AgentConversationPhoneRoute = AgentConversationPhoneRouteImport.update({
   id: '/conversation/$phone',
   path: '/conversation/$phone',
@@ -58,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteRouteWithChildren
   '/agent': typeof AgentRouteRouteWithChildren
   '/login': typeof LoginRoute
+  '/admin/agents': typeof AdminAgentsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/agent/conversations': typeof AgentConversationsRoute
   '/agent/conversation/$phone': typeof AgentConversationPhoneRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRouteRouteWithChildren
   '/agent': typeof AgentRouteRouteWithChildren
   '/login': typeof LoginRoute
+  '/admin/agents': typeof AdminAgentsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/agent/conversations': typeof AgentConversationsRoute
   '/agent/conversation/$phone': typeof AgentConversationPhoneRoute
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteRouteWithChildren
   '/agent': typeof AgentRouteRouteWithChildren
   '/login': typeof LoginRoute
+  '/admin/agents': typeof AdminAgentsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/agent/conversations': typeof AgentConversationsRoute
   '/agent/conversation/$phone': typeof AgentConversationPhoneRoute
@@ -88,6 +97,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/agent'
     | '/login'
+    | '/admin/agents'
     | '/admin/dashboard'
     | '/agent/conversations'
     | '/agent/conversation/$phone'
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/agent'
     | '/login'
+    | '/admin/agents'
     | '/admin/dashboard'
     | '/agent/conversations'
     | '/agent/conversation/$phone'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/agent'
     | '/login'
+    | '/admin/agents'
     | '/admin/dashboard'
     | '/agent/conversations'
     | '/agent/conversation/$phone'
@@ -162,6 +174,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDashboardRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/agents': {
+      id: '/admin/agents'
+      path: '/agents'
+      fullPath: '/admin/agents'
+      preLoaderRoute: typeof AdminAgentsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/agent/conversation/$phone': {
       id: '/agent/conversation/$phone'
       path: '/conversation/$phone'
@@ -173,10 +192,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteRouteChildren {
+  AdminAgentsRoute: typeof AdminAgentsRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminAgentsRoute: AdminAgentsRoute,
   AdminDashboardRoute: AdminDashboardRoute,
 }
 
