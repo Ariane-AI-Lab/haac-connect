@@ -73,8 +73,8 @@ export async function api<T = unknown>(
 // ---- Types ----
 export interface Message {
   expediteur: "client" | "agent" | "ia" | string;
-  contenu: string;
-  horodatage: string;
+  text: string;
+  timestamp: string;
   nom_agent?: string;
 }
 
