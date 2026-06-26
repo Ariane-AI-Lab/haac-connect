@@ -46,7 +46,7 @@ function ConversationView() {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [conv?.messages.length]);
+  }, [(conv?.messages ?? []).length]);
 
   const sendMutation = useMutation({
     mutationFn: (message: string) =>
