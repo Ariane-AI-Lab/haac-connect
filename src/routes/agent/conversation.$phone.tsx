@@ -210,7 +210,7 @@ function CloseModal({
 
   const { data: problematiques = [] } = useQuery({
     queryKey: ["problematiques"],
-    queryFn: () => api<{ id: number; libelle: string }[]>("/admin/problematiques"),
+    queryFn: () => api<{ id: number; libelle: string }[]>("/problematiques"),
   });
 
   const mutation = useMutation({
