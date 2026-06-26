@@ -34,7 +34,7 @@ function AdminConversations() {
     if (search)
       list = list.filter(
         (c) =>
-          c.numero_whatsapp.includes(search) ||
+          c.phone.includes(search) ||
           (c.agent ?? "").toLowerCase().includes(search.toLowerCase()),
       );
     return list;
@@ -121,8 +121,8 @@ function AdminConversations() {
                 {filtered.map((c) => {
                   const last = (c.messages ?? [])[(c.messages ?? []).length - 1];
                   return (
-                    <tr key={c.numero_whatsapp} className="hover:bg-muted/30">
-                      <td className="px-4 py-3 font-medium">{c.numero_whatsapp}</td>
+                    <tr key={c.phone} className="hover:bg-muted/30">
+                      <td className="px-4 py-3 font-medium">{c.phone}</td>
                       <td className="px-4 py-3">
                         <StatusBadge status={c.statut} />
                       </td>
@@ -130,13 +130,13 @@ function AdminConversations() {
                         {c.agent || c.agent_cloture || "—"}
                       </td>
                       <td className="px-4 py-3 text-muted-foreground max-w-xs">
-                        {truncate(last?.contenu || "", 60)}
+                        {truncate(last?.text || "", 60)}
                       </td>
                       <td className="px-4 py-3 text-xs text-muted-foreground whitespace-nowrap">
-                        {c.derniere_activite ? (
+                        {c.en_attente_depuis ? (
                           <>
-                            <div>{formatDateTime(c.derniere_activite)}</div>
-                            <div className="opacity-70">{timeAgo(c.derniere_activite)}</div>
+                            <div>{formatDateTime(c.en_attente_depuis)}</div>
+                            <div className="opacity-70">{timeAgo(c.en_attente_depuis)}</div>
                           </>
                         ) : (
                           "—"
@@ -145,7 +145,7 @@ function AdminConversations() {
                       <td className="px-4 py-3 text-right">
                         <Link
                           to="/agent/conversation/$phone"
-                          params={{ phone: c.numero_whatsapp }}
+                          params={{ phone: c.phone }}
                           className="text-xs text-haac-green hover:underline font-medium"
                         >
                           Voir →

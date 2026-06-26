@@ -131,20 +131,20 @@ function AdminDashboard() {
                 .map((c) => {
                   const first = (c.messages ?? [])[0];
                   return (
-                    <div key={c.numero_whatsapp} className="px-5 py-3 flex items-center gap-3">
+                    <div key={c.phone} className="px-5 py-3 flex items-center gap-3">
                       <div className="h-9 w-9 rounded-full bg-haac-yellow/30 flex items-center justify-center text-xs font-semibold text-yellow-900">
-                        {c.numero_whatsapp.slice(-2)}
+                        {c.phone.slice(-2)}
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="text-sm font-medium truncate">
-                          {c.numero_whatsapp}
+                          {c.phone}
                         </div>
                         <div className="text-xs text-muted-foreground truncate">
-                          {truncate(first?.contenu || "(aucun message)", 80)}
+                          {truncate(first?.text || "(aucun message)", 80)}
                         </div>
                       </div>
                       <div className="text-xs text-muted-foreground whitespace-nowrap">
-                        {timeAgo(c.derniere_activite || first?.horodatage)}
+                        {timeAgo(c.en_attente_depuis || first?.timestamp)}
                       </div>
                     </div>
                   );

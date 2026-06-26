@@ -79,14 +79,14 @@ export interface Message {
 }
 
 export interface Conversation {
-  numero_whatsapp: string;
+  phone: string;
   statut: "IA" | "HUMAIN" | "PRISE";
   agent?: string | null;
   agent_cloture?: string | null;
   date_prise_charge?: string | null;
   date_cloture?: string | null;
   messages: Message[];
-  derniere_activite?: string;
+  en_attente_depuis?: string;
 }
 
 export interface Agent {

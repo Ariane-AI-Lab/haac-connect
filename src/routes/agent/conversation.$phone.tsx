@@ -38,7 +38,7 @@ function ConversationView() {
   });
 
   const conv = useMemo(
-    () => data?.find((c) => c.numero_whatsapp === phone),
+    () => data?.find((c) => c.phone === phone),
     [data, phone],
   );
 
@@ -124,7 +124,7 @@ function ConversationView() {
                   {isClient
                     ? "Client"
                     : m.nom_agent || (m.expediteur === "ia" ? "Assistant IA" : me?.nom || "Agent")}
-                  <span className="text-muted-foreground"> · {formatTime(m.horodatage)}</span>
+                  <span className="text-muted-foreground"> · {formatTime(m.timestamp)}</span>
                 </div>
                 <div
                   className={`px-3 py-2 rounded-2xl text-sm whitespace-pre-wrap break-words ${
@@ -133,7 +133,7 @@ function ConversationView() {
                       : "bg-haac-green text-white rounded-br-sm"
                   }`}
                 >
-                  {m.contenu}
+                  {m.text}
                 </div>
               </div>
             </div>

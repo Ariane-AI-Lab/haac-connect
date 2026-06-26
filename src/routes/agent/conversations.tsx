@@ -169,13 +169,13 @@ function WaitingList({
         const first = (c.messages ?? [])[0];
         return (
           <div
-            key={c.numero_whatsapp}
+            key={c.phone}
             className="bg-white rounded-lg border p-4 flex flex-col gap-3 shadow-sm hover:shadow transition"
           >
             <div className="flex items-start justify-between gap-2">
               <div className="flex items-center gap-2 font-medium">
                 <Phone className="h-4 w-4 text-haac-green" />
-                {c.numero_whatsapp}
+                {c.phone}
               </div>
               <span className="text-[10px] uppercase font-semibold bg-haac-yellow/30 text-yellow-900 px-2 py-0.5 rounded-full">
                 En attente
@@ -183,17 +183,17 @@ function WaitingList({
             </div>
             <div className="text-xs text-muted-foreground flex items-center gap-1">
               <Clock className="h-3 w-3" />
-              En attente depuis {formatTime(c.derniere_activite || first?.horodatage)}
+              En attente depuis {formatTime(c.en_attente_depuis || first?.timestamp)}
             </div>
             <p className="text-sm text-foreground/80 min-h-10">
-              {truncate(first?.contenu || "(aucun message)", 120)}
+              {truncate(first?.text || "(aucun message)", 120)}
             </p>
             <button
-              onClick={() => onTake(c.numero_whatsapp)}
-              disabled={taking === c.numero_whatsapp}
+              onClick={() => onTake(c.phone)}
+              disabled={taking === c.phone}
               className="mt-auto bg-haac-green hover:bg-haac-green-dark text-white font-medium text-sm py-2 rounded-md transition flex items-center justify-center gap-2 disabled:opacity-60"
             >
-              {taking === c.numero_whatsapp && <Loader2 className="h-4 w-4 animate-spin" />}
+              {taking === c.phone && <Loader2 className="h-4 w-4 animate-spin" />}
               Prendre en charge
             </button>
           </div>
@@ -213,13 +213,13 @@ function MineList({ items }: { items: Conversation[] }) {
         const last = (c.messages ?? [])[(c.messages ?? []).length - 1];
         return (
           <div
-            key={c.numero_whatsapp}
+            key={c.phone}
             className="bg-white rounded-lg border p-4 flex flex-col gap-3 shadow-sm"
           >
             <div className="flex items-start justify-between gap-2">
               <div className="flex items-center gap-2 font-medium">
                 <Phone className="h-4 w-4 text-haac-green" />
-                {c.numero_whatsapp}
+                {c.phone}
               </div>
               <span className="text-[10px] uppercase font-semibold bg-haac-green/15 text-haac-green-darker px-2 py-0.5 rounded-full">
                 En cours
@@ -230,11 +230,11 @@ function MineList({ items }: { items: Conversation[] }) {
               Prise en charge à {formatTime(c.date_prise_charge)}
             </div>
             <p className="text-sm text-foreground/80 min-h-10">
-              {truncate(last?.contenu || "", 120)}
+              {truncate(last?.text || "", 120)}
             </p>
             <button
               onClick={() =>
-                navigate({ to: "/agent/conversation/$phone", params: { phone: c.numero_whatsapp } })
+                navigate({ to: "/agent/conversation/$phone", params: { phone: c.phone } })
               }
               className="mt-auto bg-haac-green-darker hover:bg-haac-green-darker/90 text-white font-medium text-sm py-2 rounded-md transition"
             >
@@ -255,13 +255,13 @@ function ClosedList({ items }: { items: Conversation[] }) {
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {items.map((c) => (
         <div
-          key={c.numero_whatsapp}
+          key={c.phone}
           className="bg-white rounded-lg border p-4 flex flex-col gap-3 shadow-sm"
         >
           <div className="flex items-start justify-between gap-2">
             <div className="flex items-center gap-2 font-medium">
               <Phone className="h-4 w-4 text-muted-foreground" />
-              {c.numero_whatsapp}
+              {c.phone}
             </div>
             <span className="text-[10px] uppercase font-semibold bg-muted text-muted-foreground px-2 py-0.5 rounded-full">
               Clôturée
@@ -272,7 +272,7 @@ function ClosedList({ items }: { items: Conversation[] }) {
           </div>
           <button
             onClick={() =>
-              navigate({ to: "/agent/conversation/$phone", params: { phone: c.numero_whatsapp } })
+              navigate({ to: "/agent/conversation/$phone", params: { phone: c.phone } })
             }
             className="mt-auto border border-input bg-white hover:bg-muted text-foreground font-medium text-sm py-2 rounded-md transition"
           >
