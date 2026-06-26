@@ -10,17 +10,6 @@ export const Route = createFileRoute("/agent/conversation/$phone")({
   component: ConversationView,
 });
 
-const PROBLEMATIQUES = [
-  "Plainte contre une chaîne de télévision",
-  "Plainte contre une station de radio",
-  "Demande d'autorisation d'exploitation",
-  "Demande d'information sur la réglementation",
-  "Signalement de contenu illicite",
-  "Demande de renouvellement de licence",
-  "Problème technique lié à la diffusion",
-  "Demande de rendez-vous",
-  "Autre",
-];
 
 function ConversationView() {
   const { phone } = Route.useParams();
@@ -219,6 +208,11 @@ function CloseModal({
   const [problematique, setProblematique] = useState("");
   const [commentaire, setCommentaire] = useState("");
 
+  const { data: problematiques = [] } = useQuery({
+    queryKey: ["problematiques"],
+    queryFn: () => api<{ id: number; libelle: string }[]>("/admin/problematiques"),
+  });
+
   const mutation = useMutation({
     mutationFn: () =>
       api(`/cloturer-session/${encodeURIComponent(phone)}`, {
@@ -274,9 +268,9 @@ function CloseModal({
               className="w-full px-3 py-2 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-haac-green"
             >
               <option value="">— Choisir —</option>
-              {PROBLEMATIQUES.map((p) => (
-                <option key={p} value={p}>
-                  {p}
+              {problematiques.map((p) => (
+                <option key={p.id} value={p.libelle}>
+                  {p.libelle}
                 </option>
               ))}
             </select>
