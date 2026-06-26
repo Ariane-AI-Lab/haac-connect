@@ -31,8 +31,9 @@ function AdminAgents() {
 
   const toggle = useMutation({
     mutationFn: (a: Agent) =>
-      api(`/admin/agents/${a.id}/${a.actif ? "desactiver" : "activer"}`, {
-        method: "POST",
+      api(`/admin/agents/${a.id}`, {
+        method: "PUT",
+        body: JSON.stringify({ actif: !a.actif }),
       }),
     onSuccess: () => {
       toast.success("Statut mis à jour");
@@ -188,9 +189,14 @@ function CreateAgentModal({ onClose }: { onClose: () => void }) {
 
   const create = useMutation({
     mutationFn: () =>
-      api("/admin/agents", {
+      api("/admin/creer-agent", {
         method: "POST",
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          nom: form.nom,
+          email: form.email,
+          mot_de_passe: form.password,
+          role: form.role,
+        }),
       }),
     onSuccess: () => {
       toast.success("Agent créé avec succès");
