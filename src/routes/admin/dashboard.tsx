@@ -129,7 +129,7 @@ function AdminDashboard() {
                 .filter((c) => c.statut === "HUMAIN")
                 .slice(0, 6)
                 .map((c) => {
-                  const first = c.messages?.[0];
+                  const first = (c.messages ?? [])[0];
                   return (
                     <div key={c.numero_whatsapp} className="px-5 py-3 flex items-center gap-3">
                       <div className="h-9 w-9 rounded-full bg-haac-yellow/30 flex items-center justify-center text-xs font-semibold text-yellow-900">

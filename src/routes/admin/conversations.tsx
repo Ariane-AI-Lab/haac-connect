@@ -119,7 +119,7 @@ function AdminConversations() {
               </thead>
               <tbody className="divide-y">
                 {filtered.map((c) => {
-                  const last = c.messages?.[c.messages.length - 1];
+                  const last = (c.messages ?? [])[(c.messages ?? []).length - 1];
                   return (
                     <tr key={c.numero_whatsapp} className="hover:bg-muted/30">
                       <td className="px-4 py-3 font-medium">{c.numero_whatsapp}</td>
