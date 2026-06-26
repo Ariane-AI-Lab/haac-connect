@@ -10,17 +10,6 @@ export const Route = createFileRoute("/agent/conversation/$phone")({
   component: ConversationView,
 });
 
-const PROBLEMATIQUES = [
-  "Plainte contre une chaîne de télévision",
-  "Plainte contre une station de radio",
-  "Demande d'autorisation d'exploitation",
-  "Demande d'information sur la réglementation",
-  "Signalement de contenu illicite",
-  "Demande de renouvellement de licence",
-  "Problème technique lié à la diffusion",
-  "Demande de rendez-vous",
-  "Autre",
-];
 
 function ConversationView() {
   const { phone } = Route.useParams();
