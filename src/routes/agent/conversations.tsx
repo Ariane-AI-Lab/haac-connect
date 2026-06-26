@@ -166,7 +166,7 @@ function WaitingList({
   return (
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {items.map((c) => {
-        const first = c.messages?.[0];
+        const first = (c.messages ?? [])[0];
         return (
           <div
             key={c.numero_whatsapp}
@@ -210,7 +210,7 @@ function MineList({ items }: { items: Conversation[] }) {
   return (
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {items.map((c) => {
-        const last = c.messages?.[c.messages.length - 1];
+        const last = (c.messages ?? [])[(c.messages ?? []).length - 1];
         return (
           <div
             key={c.numero_whatsapp}

@@ -108,7 +108,7 @@ function ConversationView() {
         {isError && (
           <p className="text-center text-sm text-haac-red">Erreur de chargement</p>
         )}
-        {conv?.messages.map((m, i) => {
+        {(conv?.messages ?? []).map((m, i) => {
           const isClient = m.expediteur === "client";
           return (
             <div
@@ -139,7 +139,7 @@ function ConversationView() {
             </div>
           );
         })}
-        {conv && conv.messages.length === 0 && (
+        {conv && (conv.messages ?? []).length === 0 && (
           <p className="text-center text-sm text-muted-foreground">Aucun message</p>
         )}
       </div>
