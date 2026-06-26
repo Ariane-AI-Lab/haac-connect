@@ -33,7 +33,7 @@ function ConversationView() {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["conversations-humaines"],
-    queryFn: () => api<Conversation[]>("/conversations-humaines"),
+    queryFn: () => api<{ conversations: Conversation[] }>("/conversations-humaines").then((r) => r.conversations ?? []),
     refetchInterval: 10_000,
   });
 

@@ -25,7 +25,7 @@ function AdminDashboard() {
 
   const recent = useQuery({
     queryKey: ["admin", "recent-conversations"],
-    queryFn: () => api<Conversation[]>("/conversations-humaines"),
+    queryFn: () => api<{ conversations: Conversation[] }>("/conversations-humaines").then((r) => r.conversations ?? []),
     refetchInterval: 30_000,
   });
 

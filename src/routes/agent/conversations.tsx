@@ -21,7 +21,7 @@ function AgentConversations() {
 
   const { data, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ["conversations-humaines"],
-    queryFn: () => api<Conversation[]>("/conversations-humaines"),
+    queryFn: () => api<{ conversations: Conversation[] }>("/conversations-humaines").then((r) => r.conversations ?? []),
     refetchInterval: 30_000,
   });
 
