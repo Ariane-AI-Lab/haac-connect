@@ -208,6 +208,11 @@ function CloseModal({
   const [problematique, setProblematique] = useState("");
   const [commentaire, setCommentaire] = useState("");
 
+  const { data: problematiques = [] } = useQuery({
+    queryKey: ["problematiques"],
+    queryFn: () => api<{ id: number; libelle: string }[]>("/admin/problematiques"),
+  });
+
   const mutation = useMutation({
     mutationFn: () =>
       api(`/cloturer-session/${encodeURIComponent(phone)}`, {
@@ -263,9 +268,9 @@ function CloseModal({
               className="w-full px-3 py-2 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-haac-green"
             >
               <option value="">— Choisir —</option>
-              {PROBLEMATIQUES.map((p) => (
-                <option key={p} value={p}>
-                  {p}
+              {problematiques.map((p) => (
+                <option key={p.id} value={p.libelle}>
+                  {p.libelle}
                 </option>
               ))}
             </select>
