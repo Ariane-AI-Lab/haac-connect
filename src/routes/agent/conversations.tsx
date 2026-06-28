@@ -234,7 +234,7 @@ function MineList({ items }: { items: Conversation[] }) {
             </p>
             <button
               onClick={() =>
-                navigate({ to: "/agent/conversation/$phone", params: { phone: c.phone } })
+                navigate({ to: "/agent/conversation/$phone", params: { phone: String(c.id) } })
               }
               className="mt-auto bg-haac-green-darker hover:bg-haac-green-darker/90 text-white font-medium text-sm py-2 rounded-md transition"
             >

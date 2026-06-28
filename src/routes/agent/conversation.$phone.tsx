@@ -27,7 +27,7 @@ function ConversationView() {
   });
 
   const conv = useMemo(
-    () => data?.find((c) => c.phone === phone),
+    () => data?.find((c) => String(c.id) === phone),
     [data, phone],
   );
 
