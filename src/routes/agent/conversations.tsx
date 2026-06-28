@@ -52,9 +52,9 @@ function AgentConversations() {
   );
 
   const takeMutation = useMutation({
-    mutationFn: (phone: string) =>
-      api(`/prendre-en-charge/${encodeURIComponent(phone)}`, { method: "POST" }),
-    onSuccess: (_d, phone) => {
+    mutationFn: ({ id }: { id: number; phone: string }) =>
+      api(`/prendre-en-charge/${id}`, { method: "POST" }),
+    onSuccess: (_d, { phone }) => {
       toast.success("Conversation prise en charge");
       qc.invalidateQueries({ queryKey: ["conversations-humaines"] });
       setTab("mine");
@@ -125,8 +125,8 @@ function AgentConversations() {
       {!isLoading && tab === "waiting" && (
         <WaitingList
           items={waiting}
-          onTake={(p) => takeMutation.mutate(p)}
-          taking={takeMutation.isPending ? takeMutation.variables : null}
+          onTake={(c) => takeMutation.mutate({ id: c.id, phone: c.phone })}
+          taking={takeMutation.isPending ? takeMutation.variables?.phone : null}
         />
       )}
 
