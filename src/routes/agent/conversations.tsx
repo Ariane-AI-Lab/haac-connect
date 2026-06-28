@@ -52,9 +52,9 @@ function AgentConversations() {
   );
 
   const takeMutation = useMutation({
-    mutationFn: (phone: string) =>
-      api(`/prendre-en-charge/${encodeURIComponent(phone)}`, { method: "POST" }),
-    onSuccess: (_d, phone) => {
+    mutationFn: ({ id }: { id: number; phone: string }) =>
+      api(`/prendre-en-charge/${id}`, { method: "POST" }),
+    onSuccess: (_d, { phone }) => {
       toast.success("Conversation prise en charge");
       qc.invalidateQueries({ queryKey: ["conversations-humaines"] });
       setTab("mine");
@@ -125,8 +125,8 @@ function AgentConversations() {
       {!isLoading && tab === "waiting" && (
         <WaitingList
           items={waiting}
-          onTake={(p) => takeMutation.mutate(p)}
-          taking={takeMutation.isPending ? takeMutation.variables : null}
+          onTake={(c) => takeMutation.mutate({ id: c.id, phone: c.phone })}
+          taking={takeMutation.isPending ? takeMutation.variables?.phone : null}
         />
       )}
 
@@ -158,7 +158,7 @@ function WaitingList({
   taking,
 }: {
   items: Conversation[];
-  onTake: (phone: string) => void;
+  onTake: (conv: Conversation) => void;
   taking: string | null | undefined;
 }) {
   if (items.length === 0)
@@ -189,7 +189,7 @@ function WaitingList({
               {truncate(first?.text || "(aucun message)", 120)}
             </p>
             <button
-              onClick={() => onTake(c.phone)}
+              onClick={() => onTake(c)}
               disabled={taking === c.phone}
               className="mt-auto bg-haac-green hover:bg-haac-green-dark text-white font-medium text-sm py-2 rounded-md transition flex items-center justify-center gap-2 disabled:opacity-60"
             >

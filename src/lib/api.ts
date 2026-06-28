@@ -79,6 +79,7 @@ export interface Message {
 }
 
 export interface Conversation {
+  id: number;
   phone: string;
   statut: "IA" | "HUMAIN" | "PRISE";
   agent?: string | null;
