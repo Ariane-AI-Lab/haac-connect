@@ -54,11 +54,11 @@ function AgentConversations() {
   const takeMutation = useMutation({
     mutationFn: ({ id }: { id: number; phone: string }) =>
       api(`/prendre-en-charge/${id}`, { method: "POST" }),
-    onSuccess: (_d, { phone }) => {
+    onSuccess: (_d, { id }) => {
       toast.success("Conversation prise en charge");
       qc.invalidateQueries({ queryKey: ["conversations-humaines"] });
       setTab("mine");
-      navigate({ to: "/agent/conversation/$phone", params: { phone } });
+      navigate({ to: "/agent/conversation/$phone", params: { phone: String(id) } });
     },
     onError: (e: Error) => toast.error(e.message || "Échec de la prise en charge"),
   });
