@@ -39,7 +39,7 @@ function ConversationView() {
 
   const sendMutation = useMutation({
     mutationFn: (message: string) =>
-      api(`/repondre/${encodeURIComponent(phone)}`, {
+      api(`/repondre/${conv?.id}`, {
         method: "POST",
         body: JSON.stringify({ message }),
       }),
@@ -184,7 +184,7 @@ function ConversationView() {
 
       {closing && (
         <CloseModal
-          phone={phone}
+          sessionId={conv!.id}
           onClose={() => setClosing(false)}
           onClosed={() => {
             qc.invalidateQueries({ queryKey: ["conversations-humaines"] });
@@ -197,11 +197,11 @@ function ConversationView() {
 }
 
 function CloseModal({
-  phone,
+  sessionId,
   onClose,
   onClosed,
 }: {
-  phone: string;
+  sessionId: number;
   onClose: () => void;
   onClosed: () => void;
 }) {
@@ -215,7 +215,7 @@ function CloseModal({
 
   const mutation = useMutation({
     mutationFn: () =>
-      api(`/cloturer-session/${encodeURIComponent(phone)}`, {
+      api(`/cloturer-session/${sessionId}`, {
         method: "POST",
         body: JSON.stringify({
           problematique,
