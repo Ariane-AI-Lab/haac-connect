@@ -158,7 +158,7 @@ function WaitingList({
   taking,
 }: {
   items: Conversation[];
-  onTake: (phone: string) => void;
+  onTake: (conv: Conversation) => void;
   taking: string | null | undefined;
 }) {
   if (items.length === 0)
@@ -189,7 +189,7 @@ function WaitingList({
               {truncate(first?.text || "(aucun message)", 120)}
             </p>
             <button
-              onClick={() => onTake(c.phone)}
+              onClick={() => onTake(c)}
               disabled={taking === c.phone}
               className="mt-auto bg-haac-green hover:bg-haac-green-dark text-white font-medium text-sm py-2 rounded-md transition flex items-center justify-center gap-2 disabled:opacity-60"
             >
