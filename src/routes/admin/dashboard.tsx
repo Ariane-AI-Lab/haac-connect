@@ -8,6 +8,7 @@ import {
   Loader2,
   TrendingUp,
   AlertCircle,
+  Star,
 } from "lucide-react";
 import { api, type DashboardStats, type Conversation } from "@/lib/api";
 import { timeAgo, truncate } from "@/lib/format";
@@ -25,11 +26,30 @@ function AdminDashboard() {
 
   const recent = useQuery({
     queryKey: ["admin", "recent-conversations"],
-    queryFn: () => api<{ conversations: Conversation[] }>("/conversations-humaines").then((r) => r.conversations ?? []),
+    queryFn: () =>
+      api<{ conversations: Conversation[] }>("/conversations-humaines").then(
+        (r) => r.conversations ?? []
+      ),
     refetchInterval: 30_000,
   });
 
+  // Stats de la semaine pour la carte Activité
+  const statsWeek = useQuery({
+    queryKey: ["admin", "stats-week"],
+    queryFn: () =>
+      api<{
+        resume: {
+          total_conversations: number;
+          total_cloturees: number;
+          note_client_globale: number | null;
+        };
+      }>("/admin/statistiques?periode=semaine"),
+    refetchInterval: 60_000,
+  });
+
   const s = stats.data;
+  const sw = statsWeek.data?.resume;
+
   const cards = [
     {
       label: "En attente",
@@ -64,9 +84,12 @@ function AdminDashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-haac-green-darker">Tableau de bord</h1>
+        <h1 className="text-2xl font-bold text-haac-green-darker">
+          Tableau de bord
+        </h1>
         <p className="text-sm text-muted-foreground">
-          Vue d'ensemble du système — actualisation automatique toutes les 30 secondes.
+          Vue d'ensemble du système — actualisation automatique toutes les 30
+          secondes.
         </p>
       </div>
 
@@ -77,6 +100,7 @@ function AdminDashboard() {
         </div>
       )}
 
+      {/* 4 cartes temps réel */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((c) => {
           const Icon = c.icon;
@@ -98,7 +122,9 @@ function AdminDashboard() {
                     )}
                   </div>
                 </div>
-                <div className={`h-10 w-10 rounded-full flex items-center justify-center ${c.color}`}>
+                <div
+                  className={`h-10 w-10 rounded-full flex items-center justify-center ${c.color}`}
+                >
                   <Icon className="h-5 w-5" />
                 </div>
               </div>
@@ -108,13 +134,17 @@ function AdminDashboard() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
+        {/* Conversations en attente */}
         <div className="lg:col-span-2 bg-white rounded-lg border shadow-sm">
           <div className="px-5 py-4 border-b flex items-center justify-between">
             <h2 className="font-semibold flex items-center gap-2">
               <Clock className="h-4 w-4 text-haac-green" />
               Conversations en attente
             </h2>
-            <Link to="/admin/conversations" className="text-xs text-haac-green hover:underline">
+            <Link
+              to="/admin/conversations"
+              className="text-xs text-haac-green hover:underline"
+            >
               Tout voir →
             </Link>
           </div>
@@ -131,7 +161,10 @@ function AdminDashboard() {
                 .map((c) => {
                   const first = (c.messages ?? [])[0];
                   return (
-                    <div key={c.phone} className="px-5 py-3 flex items-center gap-3">
+                    <div
+                      key={c.phone}
+                      className="px-5 py-3 flex items-center gap-3"
+                    >
                       <div className="h-9 w-9 rounded-full bg-haac-yellow/30 flex items-center justify-center text-xs font-semibold text-yellow-900">
                         {c.phone.slice(-2)}
                       </div>
@@ -150,7 +183,8 @@ function AdminDashboard() {
                   );
                 })}
             {!recent.isLoading &&
-              (recent.data ?? []).filter((c) => c.statut === "HUMAIN").length === 0 && (
+              (recent.data ?? []).filter((c) => c.statut === "HUMAIN")
+                .length === 0 && (
                 <div className="p-8 text-center text-sm text-muted-foreground">
                   Aucune conversation en attente ✅
                 </div>
@@ -158,17 +192,51 @@ function AdminDashboard() {
           </div>
         </div>
 
+        {/* Carte Activité — chiffres clés de la semaine */}
         <div className="bg-white rounded-lg border shadow-sm">
           <div className="px-5 py-4 border-b">
             <h2 className="font-semibold flex items-center gap-2">
               <TrendingUp className="h-4 w-4 text-haac-green" />
-              Activité
+              Cette semaine
             </h2>
           </div>
           <div className="p-5 space-y-4">
-            <Row label="Conversations totales" value={s?.total_conversations} />
-            <Row label="Clôturées (total)" value={s?.cloturees_total} />
-            <Row label="Messages aujourd'hui" value={s?.messages_jour} />
+            {statsWeek.isLoading ? (
+              <div className="flex justify-center py-4">
+                <Loader2 className="h-5 w-5 animate-spin text-haac-green" />
+              </div>
+            ) : (
+              <>
+                <Row
+                  label="Conversations reçues"
+                  value={sw?.total_conversations}
+                />
+                <Row label="Conversations clôturées" value={sw?.total_cloturees} />
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">
+                    Satisfaction client
+                  </span>
+                  <span className="font-semibold text-foreground flex items-center gap-1">
+                    {sw?.note_client_globale ? (
+                      <>
+                        <Star className="h-3.5 w-3.5 fill-haac-yellow text-haac-yellow" />
+                        {sw.note_client_globale.toFixed(2)} / 5
+                      </>
+                    ) : (
+                      "—"
+                    )}
+                  </span>
+                </div>
+                <div className="pt-2 border-t">
+                  <Link
+                    to="/admin/statistiques"
+                    className="text-xs text-haac-green hover:underline"
+                  >
+                    Voir toutes les statistiques →
+                  </Link>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

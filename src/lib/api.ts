@@ -1,4 +1,4 @@
-const API_BASE = "https://overprompt-solfataric-johnathon.ngrok-free.dev";
+const API_BASE = "https://haac-chatbot-api.onrender.com";
 
 export interface AuthUser {
   token: string;
@@ -79,8 +79,9 @@ export interface Message {
 }
 
 export interface Conversation {
+  id: number;           // ← ajouter
   phone: string;
-  statut: "IA" | "HUMAIN" | "PRISE";
+  statut: "IA" | "HUMAIN" | "PRISE" | "CLOTUREE";  // ← ajouter CLOTUREE
   agent?: string | null;
   agent_cloture?: string | null;
   date_prise_charge?: string | null;

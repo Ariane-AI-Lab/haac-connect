@@ -11,11 +11,11 @@ export const Route = createFileRoute("/admin/conversations")({
 
 type Filter = "all" | "HUMAIN" | "PRISE" | "IA";
 
-const LABELS: Record<Filter, string> = {
+const LABELS: Record<string, string> = {
   all: "Toutes",
   HUMAIN: "En attente",
   PRISE: "En cours",
-  IA: "Clôturées / IA",
+  IA: "Clôturées",
 };
 
 function AdminConversations() {
@@ -121,7 +121,7 @@ function AdminConversations() {
                 {filtered.map((c) => {
                   const last = (c.messages ?? [])[(c.messages ?? []).length - 1];
                   return (
-                    <tr key={c.phone} className="hover:bg-muted/30">
+                    <tr key={c.id} className="hover:bg-muted/30">
                       <td className="px-4 py-3 font-medium">{c.phone}</td>
                       <td className="px-4 py-3">
                         <StatusBadge status={c.statut} />
@@ -145,11 +145,11 @@ function AdminConversations() {
                       <td className="px-4 py-3 text-right">
                         <Link
                           to="/agent/conversation/$phone"
-                          params={{ phone: c.phone }}
+                          params={{ phone: String(c.id) }}  // ← String(c.id)
                           className="text-xs text-haac-green hover:underline font-medium"
                         >
                           Voir →
-                        </Link>
+                      </Link>
                       </td>
                     </tr>
                   );
@@ -164,12 +164,13 @@ function AdminConversations() {
 }
 
 function StatusBadge({ status }: { status: Conversation["statut"] }) {
-  const map = {
+  const map: Record<string, { label: string; cls: string }> = {
     HUMAIN: { label: "En attente", cls: "bg-haac-yellow/30 text-yellow-900" },
     PRISE: { label: "En cours", cls: "bg-haac-green/15 text-haac-green-darker" },
     IA: { label: "IA / Clôturée", cls: "bg-muted text-muted-foreground" },
+    CLOTUREE: { label: "Clôturée", cls: "bg-muted text-muted-foreground" },
   };
-  const cfg = map[status];
+  const cfg = map[status] ?? { label: status, cls: "bg-muted text-muted-foreground" };
   return (
     <span
       className={`text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full ${cfg.cls}`}

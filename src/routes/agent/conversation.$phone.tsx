@@ -27,8 +27,8 @@ function ConversationView() {
   });
 
   const conv = useMemo(
-    () => data?.find((c) => c.phone === phone),
-    [data, phone],
+  () => data?.find((c) => String(c.id) === phone),
+  [data, phone],
   );
 
   useEffect(() => {
@@ -52,7 +52,8 @@ function ConversationView() {
 
   const isMine = conv?.statut === "PRISE" && conv.agent === me?.nom;
   const isClosed =
-    conv?.statut === "IA" && conv.agent_cloture === me?.nom;
+    (conv?.statut === "IA" || conv?.statut === "CLOTUREE") &&
+    (me?.role === "admin" || conv.agent_cloture === me?.nom);
 
   return (
     <div className="flex flex-col h-[calc(100vh-7rem)]">
@@ -64,7 +65,7 @@ function ConversationView() {
           <ArrowLeft className="h-4 w-4" />
         </Link>
         <div className="flex-1 min-w-0">
-          <div className="font-semibold truncate">{phone}</div>
+          <div className="font-semibold truncate">{conv?.phone || phone}</div>
           {conv && (
             <div className="text-xs text-muted-foreground">
               {isMine && "En cours avec vous"}

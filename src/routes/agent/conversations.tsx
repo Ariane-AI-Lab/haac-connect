@@ -40,25 +40,27 @@ function AgentConversations() {
     [conversations],
   );
   const mine = useMemo(
-    () => conversations.filter((c) => c.statut === "PRISE" && c.agent === me?.nom),
-    [conversations, me?.nom],
+    () => conversations.filter((c) =>
+      c.statut === "PRISE" && (me?.role === "admin" || c.agent === me?.nom)
+    ),
+    [conversations, me?.nom, me?.role],
   );
   const closed = useMemo(
-    () =>
-      conversations.filter(
-        (c) => c.statut === "IA" && c.agent_cloture === me?.nom,
-      ),
-    [conversations, me?.nom],
-  );
+  () => conversations.filter(
+    (c) => (c.statut === "CLOTUREE" || c.statut === "IA") &&
+    (me?.role === "admin" || c.agent_cloture === me?.nom)
+  ),
+  [conversations, me?.nom, me?.role],
+);
 
   const takeMutation = useMutation({
-    mutationFn: (phone: string) =>
-      api(`/prendre-en-charge/${encodeURIComponent(phone)}`, { method: "POST" }),
-    onSuccess: (_d, phone) => {
+    mutationFn: (id: number) =>
+      api(`/prendre-en-charge/${id}`, { method: "POST" }),
+    onSuccess: (_d, id) => {
       toast.success("Conversation prise en charge");
       qc.invalidateQueries({ queryKey: ["conversations-humaines"] });
       setTab("mine");
-      navigate({ to: "/agent/conversation/$phone", params: { phone } });
+      navigate({ to: "/agent/conversation/$phone", params: { phone: String(id) } });
     },
     onError: (e: Error) => toast.error(e.message || "Échec de la prise en charge"),
   });
@@ -125,7 +127,7 @@ function AgentConversations() {
       {!isLoading && tab === "waiting" && (
         <WaitingList
           items={waiting}
-          onTake={(p) => takeMutation.mutate(p)}
+          onTake={(id) => takeMutation.mutate(id)}
           taking={takeMutation.isPending ? takeMutation.variables : null}
         />
       )}
@@ -158,18 +160,18 @@ function WaitingList({
   taking,
 }: {
   items: Conversation[];
-  onTake: (phone: string) => void;
-  taking: string | null | undefined;
+  onTake: (id: number) => void;
+  taking: number | null | undefined;
 }) {
   if (items.length === 0)
     return <EmptyState icon={Inbox} text="Aucune conversation en attente ✅" />;
   return (
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {items.map((c) => {
-        const first = (c.messages ?? [])[0];
+        const last = (c.messages ?? []).at(-1);  // ← changé
         return (
           <div
-            key={c.phone}
+            key={c.id}
             className="bg-white rounded-lg border p-4 flex flex-col gap-3 shadow-sm hover:shadow transition"
           >
             <div className="flex items-start justify-between gap-2">
@@ -183,17 +185,17 @@ function WaitingList({
             </div>
             <div className="text-xs text-muted-foreground flex items-center gap-1">
               <Clock className="h-3 w-3" />
-              En attente depuis {formatTime(c.en_attente_depuis || first?.timestamp)}
+              En attente depuis {formatTime(c.en_attente_depuis || last?.timestamp)}  {/* ← changé */}
             </div>
             <p className="text-sm text-foreground/80 min-h-10">
-              {truncate(first?.text || "(aucun message)", 120)}
+              {truncate(last?.text || "(aucun message)", 120)}  {/* ← changé */}
             </p>
             <button
-              onClick={() => onTake(c.phone)}
-              disabled={taking === c.phone}
+              onClick={() => onTake(c.id)}
+              disabled={taking === c.id}
               className="mt-auto bg-haac-green hover:bg-haac-green-dark text-white font-medium text-sm py-2 rounded-md transition flex items-center justify-center gap-2 disabled:opacity-60"
             >
-              {taking === c.phone && <Loader2 className="h-4 w-4 animate-spin" />}
+              {taking === c.id && <Loader2 className="h-4 w-4 animate-spin" />}
               Prendre en charge
             </button>
           </div>
@@ -213,7 +215,7 @@ function MineList({ items }: { items: Conversation[] }) {
         const last = (c.messages ?? [])[(c.messages ?? []).length - 1];
         return (
           <div
-            key={c.phone}
+            key={c.id}
             className="bg-white rounded-lg border p-4 flex flex-col gap-3 shadow-sm"
           >
             <div className="flex items-start justify-between gap-2">
@@ -234,7 +236,7 @@ function MineList({ items }: { items: Conversation[] }) {
             </p>
             <button
               onClick={() =>
-                navigate({ to: "/agent/conversation/$phone", params: { phone: c.phone } })
+                navigate({ to: "/agent/conversation/$phone", params: { phone: String(c.id) } })
               }
               className="mt-auto bg-haac-green-darker hover:bg-haac-green-darker/90 text-white font-medium text-sm py-2 rounded-md transition"
             >
@@ -255,7 +257,7 @@ function ClosedList({ items }: { items: Conversation[] }) {
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {items.map((c) => (
         <div
-          key={c.phone}
+          key={c.id}
           className="bg-white rounded-lg border p-4 flex flex-col gap-3 shadow-sm"
         >
           <div className="flex items-start justify-between gap-2">
@@ -272,7 +274,7 @@ function ClosedList({ items }: { items: Conversation[] }) {
           </div>
           <button
             onClick={() =>
-              navigate({ to: "/agent/conversation/$phone", params: { phone: c.phone } })
+              navigate({ to: "/agent/conversation/$phone", params: { phone: String(c.id) } })
             }
             className="mt-auto border border-input bg-white hover:bg-muted text-foreground font-medium text-sm py-2 rounded-md transition"
           >
