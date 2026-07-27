@@ -133,3 +133,24 @@ export interface Problematique {
   libelle: string;
   actif?: boolean;
 }
+
+export interface StatsIA {
+  periode: string;
+  total_sessions_ia: number;
+  total_handovers: number;
+  taux_handover_pct: number;
+  duree_reponse_moy_sec: number | null;
+  sessions_par_periode: { jour: string; total: number }[];
+}
+
+export interface QuestionFrequente {
+  phone: string;
+  question: string;
+  duree_sec: number | null;
+  date: string;
+}
+
+export interface ThemeFrequent {
+  theme: string;
+  nombre: number;
+}

@@ -14,6 +14,7 @@ import { Route as AgentRouteRouteImport } from './routes/agent/route'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AgentConversationsRouteImport } from './routes/agent/conversations'
+import { Route as AdminStatistiquesIaRouteImport } from './routes/admin/statistiques-ia'
 import { Route as AdminStatistiquesRouteImport } from './routes/admin/statistiques'
 import { Route as AdminProblematiquesRouteImport } from './routes/admin/problematiques'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
@@ -45,6 +46,11 @@ const AgentConversationsRoute = AgentConversationsRouteImport.update({
   id: '/conversations',
   path: '/conversations',
   getParentRoute: () => AgentRouteRoute,
+} as any)
+const AdminStatistiquesIaRoute = AdminStatistiquesIaRouteImport.update({
+  id: '/statistiques-ia',
+  path: '/statistiques-ia',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminStatistiquesRoute = AdminStatistiquesRouteImport.update({
   id: '/statistiques',
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/problematiques': typeof AdminProblematiquesRoute
   '/admin/statistiques': typeof AdminStatistiquesRoute
+  '/admin/statistiques-ia': typeof AdminStatistiquesIaRoute
   '/agent/conversations': typeof AgentConversationsRoute
   '/agent/conversation/$phone': typeof AgentConversationPhoneRoute
 }
@@ -100,6 +107,7 @@ export interface FileRoutesByTo {
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/problematiques': typeof AdminProblematiquesRoute
   '/admin/statistiques': typeof AdminStatistiquesRoute
+  '/admin/statistiques-ia': typeof AdminStatistiquesIaRoute
   '/agent/conversations': typeof AgentConversationsRoute
   '/agent/conversation/$phone': typeof AgentConversationPhoneRoute
 }
@@ -114,6 +122,7 @@ export interface FileRoutesById {
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/problematiques': typeof AdminProblematiquesRoute
   '/admin/statistiques': typeof AdminStatistiquesRoute
+  '/admin/statistiques-ia': typeof AdminStatistiquesIaRoute
   '/agent/conversations': typeof AgentConversationsRoute
   '/agent/conversation/$phone': typeof AgentConversationPhoneRoute
 }
@@ -129,6 +138,7 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/problematiques'
     | '/admin/statistiques'
+    | '/admin/statistiques-ia'
     | '/agent/conversations'
     | '/agent/conversation/$phone'
   fileRoutesByTo: FileRoutesByTo
@@ -142,6 +152,7 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/problematiques'
     | '/admin/statistiques'
+    | '/admin/statistiques-ia'
     | '/agent/conversations'
     | '/agent/conversation/$phone'
   id:
@@ -155,6 +166,7 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/problematiques'
     | '/admin/statistiques'
+    | '/admin/statistiques-ia'
     | '/agent/conversations'
     | '/agent/conversation/$phone'
   fileRoutesById: FileRoutesById
@@ -202,6 +214,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/agent/conversations'
       preLoaderRoute: typeof AgentConversationsRouteImport
       parentRoute: typeof AgentRouteRoute
+    }
+    '/admin/statistiques-ia': {
+      id: '/admin/statistiques-ia'
+      path: '/statistiques-ia'
+      fullPath: '/admin/statistiques-ia'
+      preLoaderRoute: typeof AdminStatistiquesIaRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/admin/statistiques': {
       id: '/admin/statistiques'
@@ -254,6 +273,7 @@ interface AdminRouteRouteChildren {
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminProblematiquesRoute: typeof AdminProblematiquesRoute
   AdminStatistiquesRoute: typeof AdminStatistiquesRoute
+  AdminStatistiquesIaRoute: typeof AdminStatistiquesIaRoute
 }
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
@@ -262,6 +282,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminDashboardRoute: AdminDashboardRoute,
   AdminProblematiquesRoute: AdminProblematiquesRoute,
   AdminStatistiquesRoute: AdminStatistiquesRoute,
+  AdminStatistiquesIaRoute: AdminStatistiquesIaRoute,
 }
 
 const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(

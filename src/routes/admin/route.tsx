@@ -5,6 +5,7 @@ import {
   Users,
   MessageSquare,
   BarChart3,
+  Bot,
   Tag,
   LogOut,
   Menu,
@@ -21,7 +22,8 @@ const NAV = [
   { to: "/admin/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
   { to: "/admin/conversations", label: "Conversations", icon: MessageSquare },
   { to: "/admin/agents", label: "Agents", icon: Users },
-  { to: "/admin/statistiques", label: "Statistiques", icon: BarChart3 },
+  { to: "/admin/statistiques", label: "Statistiques Handover", icon: BarChart3 },
+  { to: "/admin/statistiques-ia", label: "Statistiques IA", icon: Bot },
   { to: "/admin/problematiques", label: "Problématiques", icon: Tag },
 ] as const;
 
@@ -98,7 +100,7 @@ function AdminLayout() {
           <nav className="p-3 space-y-1">
             {NAV.map((item) => {
               const Icon = item.icon;
-              const active = pathname.startsWith(item.to);
+              const active = pathname === item.to || pathname.startsWith(`${item.to}/`);
               return (
                 <Link
                   key={item.to}
