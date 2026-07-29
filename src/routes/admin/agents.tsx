@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { api, type Agent } from "@/lib/api";
-import { formatDateTime } from "@/lib/format";
 
 export const Route = createFileRoute("/admin/agents")({
   component: AdminAgents,
@@ -111,7 +110,6 @@ function AdminAgents() {
                   <th className="px-4 py-3 font-medium">Email</th>
                   <th className="px-4 py-3 font-medium">Rôle</th>
                   <th className="px-4 py-3 font-medium">Statut</th>
-                  <th className="px-4 py-3 font-medium">Dernière connexion</th>
                   <th className="px-4 py-3 font-medium text-right">Actions</th>
                 </tr>
               </thead>
@@ -140,9 +138,6 @@ function AdminAgents() {
                       >
                         {a.actif ? "Actif" : "Inactif"}
                       </span>
-                    </td>
-                    <td className="px-4 py-3 text-xs text-muted-foreground">
-                      {a.derniere_connexion ? formatDateTime(a.derniere_connexion) : "—"}
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex justify-end gap-1">
