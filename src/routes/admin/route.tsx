@@ -7,7 +7,7 @@ import {
   BarChart3,
   Bot,
   Tag,
-  LogOut,
+  User,
   Menu,
   X,
 } from "lucide-react";
@@ -25,6 +25,7 @@ const NAV = [
   { to: "/admin/statistiques", label: "Statistiques Handover", icon: BarChart3 },
   { to: "/admin/statistiques-ia", label: "Statistiques IA", icon: Bot },
   { to: "/admin/problematiques", label: "Problématiques", icon: Tag },
+  { to: "/admin/profile", label: "Profil", icon: User },
 ] as const;
 
 function AdminLayout() {
@@ -80,13 +81,7 @@ function AdminLayout() {
               <div className="text-sm font-medium">{user.nom}</div>
               <div className="text-[11px] text-white/70 capitalize">{user.role}</div>
             </div>
-            <button
-              onClick={logout}
-              className="flex items-center gap-1.5 bg-haac-red hover:opacity-90 text-white text-sm font-medium px-3 py-1.5 rounded-md transition"
-            >
-              <LogOut className="h-4 w-4" />
-              <span className="hidden sm:inline">Déconnexion</span>
-            </button>
+            
           </div>
         </div>
       </header>

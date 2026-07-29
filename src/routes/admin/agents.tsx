@@ -10,6 +10,7 @@ import {
   Trash2,
   X,
   Users,
+  Pencil,
 } from "lucide-react";
 import { toast } from "sonner";
 import { api, type Agent } from "@/lib/api";
@@ -23,6 +24,7 @@ function AdminAgents() {
   const qc = useQueryClient();
   const [search, setSearch] = useState("");
   const [creating, setCreating] = useState(false);
+  const [roleEditAgent, setRoleEditAgent] = useState<Agent | null>(null);
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["admin", "agents"],
@@ -145,6 +147,13 @@ function AdminAgents() {
                     <td className="px-4 py-3">
                       <div className="flex justify-end gap-1">
                         <button
+                          onClick={() => setRoleEditAgent(a)}
+                          title="Changer le rôle"
+                          className="p-2 rounded hover:bg-muted text-muted-foreground hover:text-haac-green"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </button>
+                        <button
                           onClick={() => toggle.mutate(a)}
                           disabled={toggle.isPending}
                           title={a.actif ? "Désactiver" : "Activer"}
@@ -174,6 +183,9 @@ function AdminAgents() {
       </div>
 
       {creating && <CreateAgentModal onClose={() => setCreating(false)} />}
+      {roleEditAgent && (
+        <ChangeRoleModal agent={roleEditAgent} onClose={() => setRoleEditAgent(null)} />
+      )}
     </div>
   );
 }
@@ -194,13 +206,18 @@ function CreateAgentModal({ onClose }: { onClose: () => void }) {
         body: JSON.stringify({
           nom: form.nom,
           email: form.email,
-          mot_de_passe: form.password,
+          mot_de_passe: form.password || undefined,
           role: form.role,
         }),
       }),
-    onSuccess: () => {
-      toast.success("Agent créé avec succès");
+    onSuccess: (data: any) => {
       qc.invalidateQueries({ queryKey: ["admin", "agents"] });
+      const temp = data?.mot_de_passe_temporaire;
+      if (temp) {
+        toast.success(`Agent créé — mot de passe temporaire: ${temp}`);
+      } else {
+        toast.success("Agent créé avec succès");
+      }
       onClose();
     },
     onError: (e: Error) => toast.error(e.message || "Échec de la création"),
@@ -247,9 +264,8 @@ function CreateAgentModal({ onClose }: { onClose: () => void }) {
               className="input"
             />
           </Field>
-          <Field label="Mot de passe">
+          <Field label="Mot de passe (laisser vide pour générer)">
             <input
-              required
               type="password"
               minLength={6}
               value={form.password}
@@ -292,6 +308,74 @@ function CreateAgentModal({ onClose }: { onClose: () => void }) {
   );
 }
 
+function ChangeRoleModal({ agent, onClose }: { agent: Agent; onClose: () => void }) {
+  const qc = useQueryClient();
+  const [role, setRole] = useState<Agent["role"]>(agent.role);
+
+  const save = useMutation({
+    mutationFn: () =>
+      api(`/admin/agents/${agent.id}`, {
+        method: "PUT",
+        body: JSON.stringify({ role }),
+      }),
+    onSuccess: () => {
+      toast.success("Rôle mis à jour");
+      qc.invalidateQueries({ queryKey: ["admin", "agents"] });
+      onClose();
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  return (
+    <div
+      className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-lg shadow-xl w-full max-w-sm"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between px-5 py-4 border-b">
+          <h2 className="font-semibold">Changer le rôle de {agent.nom}</h2>
+          <button onClick={onClose} className="p-1 rounded hover:bg-muted">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        <div className="p-5 space-y-4">
+          <label className="block">
+            <span className="text-xs font-medium text-muted-foreground">Rôle</span>
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value as Agent["role"])}
+              className="input mt-1"
+            >
+              <option value="agent">Agent</option>
+              <option value="admin">Administrateur</option>
+              <option value="superadmin">Superadmin</option>
+            </select>
+          </label>
+          <div className="flex justify-end gap-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-sm rounded-md border hover:bg-muted"
+            >
+              Annuler
+            </button>
+            <button
+              onClick={() => save.mutate()}
+              disabled={save.isPending || role === agent.role}
+              className="px-4 py-2 text-sm rounded-md bg-haac-green hover:bg-haac-green-dark text-white font-medium flex items-center gap-2 disabled:opacity-60"
+            >
+              {save.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+              Enregistrer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">

@@ -39,14 +39,16 @@ function AgentLayout() {
             </span>
           </Link>
           <div className="flex items-center gap-3">
-            <span className="text-sm hidden sm:inline">{user.nom}</span>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-1.5 bg-haac-red hover:opacity-90 text-white text-sm font-medium px-3 py-1.5 rounded-md transition"
+            <div className="text-right hidden sm:block">
+              <div className="text-sm font-medium">{user.nom}</div>
+              <div className="text-[11px] text-white/70 capitalize">{user.role}</div>
+            </div>
+            <Link
+              to="/agent/profile"
+              className="hidden sm:inline px-3 py-1 text-sm rounded-md border hover:bg-muted"
             >
-              <LogOut className="h-4 w-4" />
-              <span className="hidden sm:inline">Se déconnecter</span>
-            </button>
+              Profil
+            </Link>
           </div>
         </div>
       </header>
