@@ -1,8 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Loader2, Search, MessageSquare, RefreshCw } from "lucide-react";
-import { api, type Conversation } from "@/lib/api";
+import { api, clearAuth, type Conversation } from "@/lib/api";
 import { formatDateTime, timeAgo, truncate } from "@/lib/format";
 
 export const Route = createFileRoute("/admin/conversations")({
@@ -19,8 +19,14 @@ const LABELS: Record<string, string> = {
 };
 
 function AdminConversations() {
+  const navigate = useNavigate();
   const [filter, setFilter] = useState<Filter>("all");
   const [search, setSearch] = useState("");
+
+  const handleViewAsAgent = () => {
+    clearAuth();
+    navigate({ to: "/login" });
+  };
 
   const { data, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ["admin", "all-conversations"],
@@ -30,14 +36,34 @@ function AdminConversations() {
 
   const filtered = useMemo(() => {
     let list = data ?? [];
-    if (filter !== "all") list = list.filter((c) => c.statut === filter);
+    
+    // Gérer le filtre (inclure CLOTUREE quand on filtre sur IA)
+    if (filter !== "all") {
+      if (filter === "IA") {
+        list = list.filter((c) => c.statut === "IA" || c.statut === "CLOTUREE");
+      } else {
+        list = list.filter((c) => c.statut === filter);
+      }
+    }
+    
     if (search)
       list = list.filter(
         (c) =>
           c.phone.includes(search) ||
           (c.agent ?? "").toLowerCase().includes(search.toLowerCase()),
       );
-    return list;
+    
+    // Trier par date décroissante (les plus récentes d'abord)
+    return list.sort((a, b) => {
+      // Utiliser date_cloture pour les clôturées, sinon en_attente_depuis
+      const getDate = (c: Conversation) => {
+        if (c.statut === "CLOTUREE" || c.statut === "IA") {
+          return new Date(c.date_cloture || 0).getTime();
+        }
+        return new Date(c.en_attente_depuis || 0).getTime();
+      };
+      return getDate(b) - getDate(a);
+    });
   }, [data, filter, search]);
 
   return (
@@ -143,13 +169,12 @@ function AdminConversations() {
                         )}
                       </td>
                       <td className="px-4 py-3 text-right">
-                        <Link
-                          to="/agent/conversation/$phone"
-                          params={{ phone: String(c.id) }}  // ← String(c.id)
+                        <button
+                          onClick={handleViewAsAgent}
                           className="text-xs text-haac-green hover:underline font-medium"
                         >
                           Voir →
-                      </Link>
+                        </button>
                       </td>
                     </tr>
                   );

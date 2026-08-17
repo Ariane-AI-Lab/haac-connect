@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Eye, EyeOff, Loader2, Shield, User } from "lucide-react";
 import { toast } from "sonner";
 import { api, saveAuth, type AuthUser } from "@/lib/api";
@@ -19,6 +19,12 @@ function LoginPage() {
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    setEmail("");
+    setPassword("");
+    setShow(false);
+  }, [mode]);
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!email || !password) return;
@@ -36,8 +42,10 @@ function LoginPage() {
       });
 
       const isAdminRole = data.role === "admin" || data.role === "superadmin";
-      if (mode === "agent" && data.role !== "agent") {
-        toast.error("Ce compte n'est pas un compte agent");
+      const isAgentRole = data.role === "agent" || isAdminRole;
+      
+      if (mode === "agent" && !isAgentRole) {
+        toast.error("Ce compte n'a pas accès à l'espace agent");
         setLoading(false);
         return;
       }
@@ -49,7 +57,7 @@ function LoginPage() {
 
       saveAuth({ token: data.access_token, nom: data.nom, role: data.role });
       toast.success(`Bienvenue ${data.nom}`);
-      if (data.role === "agent") navigate({ to: "/agent/conversations" });
+      if (mode === "agent") navigate({ to: "/agent/conversations" });
       else navigate({ to: "/admin/dashboard" });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Échec de la connexion");
