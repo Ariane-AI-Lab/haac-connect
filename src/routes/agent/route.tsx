@@ -14,7 +14,7 @@ function AgentLayout() {
 
   useEffect(() => {
     const u = getAuth();
-    if (!u || u.role !== "agent") {
+    if (!u || (u.role !== "agent" && u.role !== "admin" && u.role !== "superadmin")) {
       navigate({ to: "/login" });
       return;
     }
