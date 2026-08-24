@@ -17,6 +17,7 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -38,12 +39,16 @@ function LoginPage() {
       }>("/auth/login", {
         method: "POST",
         auth: false,
-        body: JSON.stringify({ email, mot_de_passe: password }),
+        body: JSON.stringify({
+          email,
+          mot_de_passe: password,
+          remember_me: rememberMe,
+        }),
       });
 
       const isAdminRole = data.role === "admin" || data.role === "superadmin";
       const isAgentRole = data.role === "agent" || isAdminRole;
-      
+
       if (mode === "agent" && !isAgentRole) {
         toast.error("Ce compte n'a pas accès à l'espace agent");
         setLoading(false);
@@ -55,7 +60,7 @@ function LoginPage() {
         return;
       }
 
-      saveAuth({ token: data.access_token, nom: data.nom, role: data.role });
+      saveAuth({ token: data.access_token, nom: data.nom, role: data.role }, rememberMe);
       toast.success(`Bienvenue ${data.nom}`);
       if (mode === "agent") navigate({ to: "/agent/conversations" });
       else navigate({ to: "/admin/dashboard" });
@@ -72,12 +77,8 @@ function LoginPage() {
         <div className="flex justify-center mb-6">
           <img src={logo} alt="HAAC" className="h-24 w-auto object-contain" />
         </div>
-        <h1 className="text-center text-xl font-bold text-haac-green-darker mb-1">
-          HAAC Chatbot
-        </h1>
-        <p className="text-center text-sm text-muted-foreground mb-6">
-          Espace de gestion
-        </p>
+        <h1 className="text-center text-xl font-bold text-haac-green-darker mb-1">HAAC Chatbot</h1>
+        <p className="text-center text-sm text-muted-foreground mb-6">Espace de gestion</p>
 
         <div className="grid grid-cols-2 gap-2 p-1 bg-muted rounded-lg mb-6">
           <button
@@ -141,6 +142,15 @@ function LoginPage() {
               </button>
             </div>
           </div>
+          <label className="flex cursor-pointer items-center gap-2 text-sm text-muted-foreground">
+            <input
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+              className="h-4 w-4 rounded border-input accent-haac-green"
+            />
+            Se souvenir de moi sur cet appareil
+          </label>
           <button
             type="submit"
             disabled={loading}

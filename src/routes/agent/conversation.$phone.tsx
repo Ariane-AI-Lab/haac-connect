@@ -100,26 +100,32 @@ function ConversationView() {
         )}
         {(conv?.messages ?? []).map((m, i) => {
           const isClient = m.expediteur === "client";
+          const isIA = m.expediteur === "ia";
           return (
-            <div
-              key={i}
-              className={`flex ${isClient ? "justify-start" : "justify-end"}`}
-            >
+            <div key={i} className={`flex ${isClient ? "justify-start" : "justify-end"}`}>
               <div className={`max-w-[80%] sm:max-w-[70%]`}>
                 <div
                   className={`text-[10px] mb-1 font-medium ${
-                    isClient ? "text-muted-foreground" : "text-haac-green-darker text-right"
+                    isClient
+                      ? "text-muted-foreground"
+                      : isIA
+                      ? "text-sky-700 text-right"
+                      : "text-haac-green-darker text-right"
                   }`}
                 >
                   {isClient
                     ? "Client"
-                    : m.nom_agent || (m.expediteur === "ia" ? "Assistant IA" : me?.nom || "Agent")}
+                    : isIA
+                    ? "🤖 Assistant IA"
+                    : m.nom_agent || me?.nom || "Agent"}
                   <span className="text-muted-foreground"> · {formatTime(m.timestamp)}</span>
                 </div>
                 <div
                   className={`px-3 py-2 rounded-2xl text-sm whitespace-pre-wrap break-words ${
                     isClient
                       ? "bg-muted text-foreground rounded-bl-sm"
+                      : isIA
+                      ? "bg-sky-100 text-sky-900 rounded-br-sm border border-sky-200"
                       : "bg-haac-green text-white rounded-br-sm"
                   }`}
                 >

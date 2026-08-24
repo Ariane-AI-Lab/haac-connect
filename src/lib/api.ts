@@ -8,14 +8,17 @@ export interface AuthUser {
 
 const STORAGE_KEY = "haac_auth";
 
-export function saveAuth(user: AuthUser) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+export function saveAuth(user: AuthUser, rememberMe = true) {
+  localStorage.removeItem(STORAGE_KEY);
+  sessionStorage.removeItem(STORAGE_KEY);
+  const storage = rememberMe ? localStorage : sessionStorage;
+  storage.setItem(STORAGE_KEY, JSON.stringify(user));
 }
 
 export function getAuth(): AuthUser | null {
   if (typeof window === "undefined") return null;
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(STORAGE_KEY) ?? sessionStorage.getItem(STORAGE_KEY);
     return raw ? (JSON.parse(raw) as AuthUser) : null;
   } catch {
     return null;
@@ -24,6 +27,7 @@ export function getAuth(): AuthUser | null {
 
 export function clearAuth() {
   localStorage.removeItem(STORAGE_KEY);
+  sessionStorage.removeItem(STORAGE_KEY);
 }
 
 export class ApiError extends Error {
@@ -79,9 +83,9 @@ export interface Message {
 }
 
 export interface Conversation {
-  id: number;           // ← ajouter
+  id: number; // ← ajouter
   phone: string;
-  statut: "IA" | "HUMAIN" | "PRISE" | "CLOTUREE";  // ← ajouter CLOTUREE
+  statut: "IA" | "HUMAIN" | "PRISE" | "CLOTUREE"; // ← ajouter CLOTUREE
   agent?: string | null;
   agent_cloture?: string | null;
   date_prise_charge?: string | null;
